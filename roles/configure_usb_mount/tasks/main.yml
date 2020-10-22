@@ -1,0 +1,27 @@
+---
+
+- name: Create the dirs needed for the USB mount
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ usb_mount_dir }}"
+
+- name: "Get the UUID of the USB stick (WARNING: manually defined USB stick as /dev/sda)"
+  shell: blkid | awk '/\/dev\/sd*/ {split ($2, a, "="); gsub(/"/, "", a[2]); print a[2]}'  
+  register: usb_uuid
+
+- name: Print the generated password
+  debug:
+    msg: "The UUID is {{ usb_uuid.stdout }}"
+
+- name: Modify fstab to enable automount of the USB drive
+  lineinfile:
+    dest: /etc/fstab 
+    line: "UUID={{ usb_uuid.stdout }} {{ usb_mount_dir }} ext4 defaults,auto,users,rw,nofail 0 0"
+
+- name: Reload local-fs.target to get the USB drive mounted
+  systemd:
+    daemon_reload: yes
+    name: local-fs.target
+    state: restarted

@@ -1,0 +1,16 @@
+---
+
+- name: Fetch and unarchive rclone zip ({{ rclone_download_url }})
+  unarchive:
+    src: "{{ rclone_download_url }}"
+    dest: "{{ tmp_download_dir }}"
+    remote_src: yes
+    list_files: yes
+  register: archive_contents
+
+- name: Copy rclone binary to a path dir
+  copy:
+    src: "{{ tmp_download_dir }}/{{ archive_contents.files[0] }}/rclone"
+    dest: "{{ dir_for_executables }}"
+    remote_src: yes
+    mode: "755"

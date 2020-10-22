@@ -1,0 +1,29 @@
+---
+
+- name: "Copy the timers to correct location"
+  copy:
+    src: "{{ item }}"
+    dest: "{{ systemd_unit_files_dir }}"
+  loop:
+    - "daily_backup_sync.timer"
+    - "monthly_backup_archive.timer"
+
+- name: "Populate the service files (daily) templates and copy them to the targed"
+  template:
+    src:  "daily_backup_sync.service.j2"
+    dest: "{{ systemd_unit_files_dir }}/daily_backup_sync.service"
+
+- name: "Populate the service files (monthly) templates and copy them to the targed"
+  template:
+    src:  "monthly_backup_archive.service.j2"
+    dest: "{{ systemd_unit_files_dir }}/monthly_backup_archive.service"
+
+- name: Enable the systemd timers for services
+  systemd:
+    daemon_reload: yes
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  loop:
+    - "daily_backup_sync.timer"
+    - "monthly_backup_archive.timer"

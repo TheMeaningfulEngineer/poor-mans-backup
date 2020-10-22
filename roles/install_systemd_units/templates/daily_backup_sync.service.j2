@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily google drive sync
+
+[Service]
+Type=simple
+ExecStart=rclone -v sync {{ rclone_remote_name }}:{{ rclone_remote_dir }} {{ daily_state_dir }}
+ExecStopPost=/usr/bin/send_email_on_service_fail.py --gmail_sender {{ email_sender }} --gmail_pass {{ email_sender_pass }} --recipients {{ email_receiver }} --subject "Daily backup failed" --body_cmd="journalctl --since '5 minutes ago' --no-pager -u daily_backup_sync.service"
+User={{ ansible_user }}
+
+[Install]
+WantedBy=multi-user.target

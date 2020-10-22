@@ -1,0 +1,10 @@
+[Unit]
+Description=Once per month copy to external storage 
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/monthly_backup_archive -u {{ usb_mount_dir }} -d {{ daily_state_dir }}
+ExecStopPost=/usr/bin/send_email_on_service_fail.py --gmail_sender {{ email_sender }} --gmail_pass {{ email_sender_pass }} --recipients {{ email_receiver }} --subject "Montly backup failed" --body_cmd="journalctl --since '5 minutes ago' --no-pager -u monthly_backup_archive.service"
+
+[Install]
+WantedBy=multi-user.target

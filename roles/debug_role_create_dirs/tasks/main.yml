@@ -1,0 +1,10 @@
+---
+
+- name: Create the dirs if needed 
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ dir_for_executables }}"
+    - "{{ tmp_download_dir }}"
+    - "{{ systemd_unit_files_dir }}"

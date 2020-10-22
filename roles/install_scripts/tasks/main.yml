@@ -1,0 +1,19 @@
+---
+
+- name: Install script dependencies
+  become: yes
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    name: 
+      - zip
+    state: present
+
+- name: "Copy the scripts {{ dir_for_executables }} "
+  copy:
+    src: "{{ item }}"
+    dest: "{{ dir_for_executables }}"
+    mode: "755"
+  loop:
+    - "monthly_backup_archive"
+    - "send_email_on_service_fail.py"

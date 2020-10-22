@@ -1,0 +1,10 @@
+[Unit]
+Description=Sync local dir with google drive
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+Unit=monthly_backup_archive.service
+
+[Install]
+WantedBy=timers.target

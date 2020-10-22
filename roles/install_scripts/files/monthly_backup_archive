@@ -1,0 +1,17 @@
+#!/bin/bash
+while getopts u:d: flag
+	do
+	    case "${flag}" in
+	        u) usb_mount=${OPTARG};;
+	        d) daily_dir=${OPTARG};;
+	    esac
+	done
+	echo "USB mount: $usb_mount";
+	echo "Daily dir: $daily_dir";
+
+ARCHIVE_NAME=$(date +%Y-%m).zip
+
+echo "Compressing $daily_dir to $ARCHIVE_NAME."
+zip -r $ARCHIVE_NAME $daily_dir
+echo "$ARCHIVE_NAME to $usb_mount"
+cp $ARCHIVE_NAME $usb_mount

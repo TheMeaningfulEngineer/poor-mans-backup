@@ -1,0 +1,26 @@
+  - name: "Playing with Ansible and Git"
+    hosts: all
+    become: yes
+    vars:
+      # root_dir_debug: "{{ playbook_dir }}/ansible_execution_results"
+      root_dir_debug: ""
+
+      # Locations for usb_mount
+      usb_mount_dir: "{{ root_dir_debug }}/mnt/usb_stick_1"
+      usb_stick_partition_dev: "/dev/sda1"
+
+      daily_state_dir: "{{ root_dir_debug }}/home/{{ ansible_user }}/drive_current"
+
+      rclone_download_url: "https://downloads.rclone.org/rclone-current-linux-arm-v7.zip"
+
+      # Location of sistem dir
+      tmp_download_dir: "{{ root_dir_debug }}/tmp"
+      dir_for_executables: "{{ root_dir_debug }}/usr/bin"
+      systemd_unit_files_dir: "{{ root_dir_debug }}/etc/systemd/system"
+
+    roles:
+        - debug_role_create_dirs
+        - install_rclone
+        - install_scripts
+        - configure_usb_mount
+        - install_systemd_units
